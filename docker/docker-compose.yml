@@ -1,0 +1,20 @@
+version: "3"
+services:
+  app:
+    container_name: utn-devops-app
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:80"
+    env_file: configs/app/.env
+    depends_on:
+      - db_mongo
+  db_mongo:
+    image: mongo:latest
+    container_name: utn-devops-db
+    ports:
+      - "9000:27017"
+    volumes:
+      - "/var/db/mongo:/data/db"
+      - "./configs/mongo:/tmp/seed"

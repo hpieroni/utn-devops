@@ -10,11 +10,12 @@ Vagrant.configure("2") do |config|
 
   # Redirecciono puertos desde la maquina virtual a la maquina real. Por ejemplo 
   # del puerto 80 (web) de la maquina virtual con Debian se podrá acceder a través
-  # del puerto 8081 de nuestro navegador.
+  # del puerto 8080 de nuestro navegador.
   # Esto se realiza para poder darle visibilidad a los puertos de la maquina virtual 
   # y además para que no se solapen los puertos con los de nuestra equipo en el caso de que
   # ese número de puerto este en uso.
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 3000, host: 8080
+  config.vm.network "forwarded_port", guest: 9000, host: 5000
   
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -37,9 +38,8 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
   # 
-  # Mapeo de directorios que se comparten entre la maquina virtual y nuestro equipo. En este caso es
-  # el propio directorio donde esta el archivo y el directorio "/vagrant" dentro de la maquina virtual.
-  config.vm.synced_folder ".", "/vagrant"
+  # Mapeo de directorios que se comparten entre la maquina virtual y nuestro equipo. 
+  config.vm.synced_folder "./docker", "/tmp/docker"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -71,11 +71,14 @@ Vagrant.configure("2") do |config|
   #  echo "I am provisioning..."
   #  date > /etc/vagrant_provisioned_at
   #SHELL
-  
-  # Copia el archivo de configuración del servidor web
-  config.vm.provision "file", source: "Configs/devops.site.conf", destination: "/tmp/devops.site.conf"
-  
-  # En este archivo tendremos el provisionamiento de software necesario para nuestra 
-  # maquina virtual. Por ejemplo, servidor web, servidor de base de datos, etc.
+    
+  # Con esta sentencia lo que hara Vagrant es copiar el archivo a la máquina Ubuntu.
+  # Además de usarlo como ejemplo para distinguir dos maneras de aprovisionamiento el archivo contiene
+  # una definición del firewall de Ubuntu para permitir el tráfico de red que se redirecciona internamente, configuración
+  # necesaria para Docker. Luego será copiado al lugar correcto por el script Vagrant.bootstrap.sh
+  config.vm.provision "file", source: "hostConfigs/ufw", destination: "/tmp/ufw"
+
+  # Con esta sentencia lo que hara Vagrant es transferir este archivo a la máquina Ubuntu
+  # y ejecutarlo una vez iniciado. En este caso ahora tendrá el aprovisionamiento para la instalación de Docker
   config.vm.provision :shell, path: "Vagrant.bootstrap.sh", run: "always"
 end
