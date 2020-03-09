@@ -16,6 +16,9 @@ Vagrant.configure("2") do |config|
   # ese número de puerto este en uso.
   config.vm.network "forwarded_port", guest: 3000, host: 8080
   config.vm.network "forwarded_port", guest: 9000, host: 5000
+  config.vm.network "forwarded_port", guest: 8082, host: 8082
+  # Puerto en que escuchar el servidor maestro de Puppet
+  config.vm.network "forwarded_port", guest: 8140, host: 8140
   
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -38,8 +41,7 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
   # 
-  # Mapeo de directorios que se comparten entre la maquina virtual y nuestro equipo. 
-  config.vm.synced_folder "./docker", "/tmp/docker"
+  # Mapeo de directorios que se comparten entre la maquina virtual y nuestro equipo.
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -77,6 +79,17 @@ Vagrant.configure("2") do |config|
   # una definición del firewall de Ubuntu para permitir el tráfico de red que se redirecciona internamente, configuración
   # necesaria para Docker. Luego será copiado al lugar correcto por el script Vagrant.bootstrap.sh
   config.vm.provision "file", source: "hostConfigs/ufw", destination: "/tmp/ufw"
+  config.vm.provision "file", source: "hostConfigs/hosts", destination: "/tmp/hosts"
+
+  # Archivos de Puppet
+  config.vm.provision "file", source: "hostConfigs/puppet/site.pp", destination: "/tmp/site.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/init.pp", destination: "/tmp/init.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/init_jenkins.pp", destination: "/tmp/init_jenkins.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/puppet.conf", destination: "/tmp/puppet.conf"
+
+  # Archivo para Jenkins
+  config.vm.provision "file", source: "hostConfigs/jenkins/default_jenkins", destination: "/tmp/jenkins_default"
+  config.vm.provision "file", source: "hostConfigs/jenkins/init_d", destination: "/tmp/jenkins_init_d"
 
   # Con esta sentencia lo que hara Vagrant es transferir este archivo a la máquina Ubuntu
   # y ejecutarlo una vez iniciado. En este caso ahora tendrá el aprovisionamiento para la instalación de Docker

@@ -1,4 +1,4 @@
-# Unidad 2 - Docker
+# Unidad 3 - Puppet
 
 ### Start
 
@@ -6,17 +6,12 @@ Vagrant
 
 `vagrant up --provision`
 
-Docker containers
+Puppet
 
-- `vagrant ssh`
-- `cd /tmp/docker`
-- `sudo docker-compose up`
-
-Seed database (desde el container de mongo)
-
-- `sudo docker exec -it utn-devops-db /bin/bash`
-- `cd /tmp/seed`
-- `bash seed.sh`
+- `sudo puppet cert sign utn-devops.localhost`
+- `sudo puppet agent -t --debug`
+- `sudo cat /var/lib/jenkins/secrets/initialAdminPassword` -> to see the password to unlock Jenkins
+- Go to `http://127.0.0.1:8082/` and configure Jenkins
 
 ### Shutdown
 
