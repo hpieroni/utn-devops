@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Prepare') {
+            steps {
+                sh 'rm -rf utn-devops-app'
+                sh 'git clone https://github.com/hpieroni/utn-devops-app.git '
+                sh 'cd utn-devops-app && git checkout unidad-2'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'cd utn-devops-app && npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'cd utn-devops-app && npm test'
+            }
+        }
+    }
+}

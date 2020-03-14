@@ -46,4 +46,15 @@ class jenkins {
         enable  => "true",
         require => Exec['reload-systemctl']
     }
+
+    exec { 'install_npm':
+        command => 'sudo apt install -y npm',
+        path    => '/usr/bin/:/bin/'
+    }
+
+    exec { 'update_npm':
+        command => 'npm install -g npm@latest',
+        path    => '/usr/bin/:/bin/',
+        require => Exec['install_npm']
+    }
 }

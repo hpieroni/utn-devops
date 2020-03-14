@@ -8,27 +8,27 @@ class docker_install {
 
 
     # Agrego el repositorio para la instalación de Docker
-    exec { 'agrego-repositorio':                    
-        command => '/usr/bin/add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'  
+    exec { 'agrego-repositorio':
+        command => '/usr/bin/add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
     } ->
 
     # Actualización de repositorio. La declaracion de un bloque exec permite definir
     # comandos que ejecutara el nodo cliente de Puppet
-    exec { 'apt-update':                    
-        command => '/usr/bin/apt-get update'  
+    exec { 'apt-update':
+        command => '/usr/bin/apt-get update'
     }
 
     # Instalación del paquete docker. Tambien es para ejemplicar que se puede declarar
     # como requisito que se ejecuten una serie de comandos antes de la instalación
     package { 'docker-ce':
-        require => Exec['apt-update','agrego-repositorio','apt-update'],       
-        ensure => installed,
+    require => Exec['apt-update','agrego-repositorio','apt-update'],
+    ensure => installed,
     }
 
     # Instalación del paquete docker-compose
     package { 'docker-compose':
-        require => Exec['apt-update'],        
-        ensure => installed,
+    require => Exec['apt-update'],
+    ensure => installed,
     }
 
     # Aprovisionamiento de configuración para la aplicación. Con esta declaracion
@@ -37,7 +37,7 @@ class docker_install {
     #     mode => "0644",
     #     owner => 'root',
     #     group => 'root',
-    #     ensure => 'present', 
+    #     ensure => 'present',
     #     source => 'puppet:///modules/docker_install/env',
     # }
 
@@ -47,8 +47,8 @@ class docker_install {
     }
 
     exec { 'config-app':
-        command => 'docker-compose -f /docker/docker-compose.yml up -d',       
-        path => '/usr/bin',  
+        command => 'docker-compose -f /docker/docker-compose.yml up -d',
+        path => '/usr/bin',
         onlyif => 'test $(docker ps |grep apache)',
     }
 

@@ -1,13 +1,14 @@
-# Unidad 3 - Puppet
+# Unidad 4 - Jenkins
 
 ### Start
 
-Vagrant
+**Vagrant**
 
 `vagrant up --provision`
 
-Puppet
+**Puppet**
 
+- `sudo puppet agent -t --debug`
 - `sudo puppet cert sign utn-devops.localhost`
 - `sudo puppet agent -t --debug`
 - `sudo cat /var/lib/jenkins/secrets/initialAdminPassword` -> to see the password to unlock Jenkins
